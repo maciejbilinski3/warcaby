@@ -256,6 +256,14 @@ dialog .section{
     -o-transform: translateX(-50%) translateY(-50%);
     -ms-transform: translateX(-50%) translateY(-50%);
 
+    padding: 1rem;
+    background-color: #EFEFEF;
+
+    -webkit-box-shadow: 1px 2px 40px 0px rgba(244,246,188,1);
+    -moz-box-shadow: 1px 2px 40px 0px rgba(244,246,188,1);
+    box-shadow: 1px 2px 40px 0px rgba(244,246,188,1);
+}
+dialog .section:not(.normal){
     display: flex;
     display: -webkit-flex;
     display: -ms-flex;
@@ -265,13 +273,6 @@ dialog .section{
     -webkit-flex-direction: column;
     -moz-flex-direction: column;
     -ms-flex-direction: column;
-
-    padding: 1rem;
-    background-color: #EFEFEF;
-
-    -webkit-box-shadow: 1px 2px 40px 0px rgba(244,246,188,1);
-    -moz-box-shadow: 1px 2px 40px 0px rgba(244,246,188,1);
-    box-shadow: 1px 2px 40px 0px rgba(244,246,188,1);
 }
 dialog.getting-started form div{
     padding: 1rem 0;
@@ -307,7 +308,6 @@ dialog .section button{
     font-family: inherit;
     border: none;
     color: #FFF;
-
 }
 dialog .section button:hover{
     cursor: pointer;
@@ -316,6 +316,42 @@ dialog .section button:hover{
 dialog .section button:focus{
     outline: none;
     background-color: #47C14D;
+}
+dialog.getting-started form h1{
+    font-size: 2.4rem;
+    margin-bottom: 0.5rem;
+}
+dialog.getting-started form .hidden{
+    display: none;
+}
+dialog.getting-started form label{
+    display: inline-block;
+    width: 20rem;
+    height: 20rem;
+    line-height: 20rem;
+    text-align: center;
+    border: 1px solid #DDD;
+    margin: 0 2rem;
+}
+dialog.getting-started form input[type="radio"]:not(:checked) + label:hover{
+    cursor: pointer;
+    background-color: #DEDEDE;
+}
+dialog.getting-started form label i{
+    font-size: 16rem;
+    vertical-align: middle;
+}
+dialog .section button.next{
+    margin: 0 auto;
+    display: none;
+    margin-top: 1rem;
+}
+dialog.getting-started form input[type="radio"]:checked ~ button.next{
+    display: block;
+}
+dialog.getting-started form input[type="radio"]:checked + label{
+    border-color: #47C24D;
+    box-shadow: 0px 0px 2px 2px #47C24D;
 }
 dialog.end section h2{
     font-size: 2.4rem;

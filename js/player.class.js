@@ -1,10 +1,11 @@
 class Player{
-    constructor(color, name){
+    constructor(color, name, computer){
         if(color === Color.RED || color === Color.WHITE){
             if(typeof(name) === "string"){
                 this.name = name;
                 this.points = 0;
                 this.pieces = [];
+                this.computer = (computer ? true : false);
 
                 try{
                     var x, y;
@@ -43,6 +44,10 @@ class Player{
 
     getName(){
         return this.name;
+    }
+
+    isComputer(){
+        return this.computer;
     }
 
     getPoints(){

@@ -1,13 +1,11 @@
+const ComputerReaction = 100;
 class Game{
-    setPlayers(player1Name, player2Name){
+    setPlayers(player1Name, player2Name, player1Computer, player2Computer){
         try{
             this.players = [];
-            this.players[0] = new Player(Color.WHITE, player1Name);
-            this.players[1] = new Player(Color.RED, player2Name);
+            this.players[0] = new Player(Color.WHITE, player1Name, player1Computer);
+            this.players[1] = new Player(Color.RED, player2Name, player2Computer);
             this.activePlayerIndex = 0;
-
-            Cookies.set("player1", player1Name, {expires: 7});
-            Cookies.set("player2", player2Name, {expires: 7});
         }catch(e){
             this.players = undefined;
             throw e;
@@ -19,42 +17,144 @@ class Game{
         var self = this;
 
         function gettingStarted(){
+                var type = Cookies.get("type");
+
                 var dialog = document.createElement("dialog");
                 dialog.className = "getting-started";
                 dialog.style.display = "block";
                     var form = document.createElement("form");
-                    form.className = "section";
-                        var divs = [document.createElement("div"), document.createElement("div"), document.createElement("div")];
-                            var player1Input = document.createElement("input");
-                            player1Input.setAttribute("type", "text");
-                            player1Input.setAttribute("name", "player1-name");
-                            player1Input.setAttribute("placeholder", "Nazwa pierwszego gracza");
-                            divs[0].appendChild(player1Input);
-
-                            var player2Input = document.createElement("input");
-                            player2Input.setAttribute("type", "text");
-                            player2Input.setAttribute("name", "player2-name");
-                            player2Input.setAttribute("placeholder", "Nazwa drugiego gracza");
-                            divs[1].appendChild(player2Input);
-
-                            var button = document.createElement("button");
-                            button.setAttribute("type", "submit");
-                            button.innerText = "Rozpocznij grę";
-                            divs[2].appendChild(button);
-                    form.appendChild(divs[0]);
-                    form.appendChild(divs[1]);
-                    form.appendChild(divs[2]);
-
+                    form.className = "section normal";
+                        var h1 = document.createElement("h1");
+                        h1.innerText = "Wybierz tryb gry:";
+                        var computerField = document.createElement("input");
+                        computerField.className = "hidden";
+                        computerField.setAttribute("type", "radio");
+                        computerField.setAttribute("name", "type");
+                        computerField.value = "computer";
+                        computerField.id = "computerField";
+                        if(type == 1) computerField.checked = true;
+                        var computerLabel = document.createElement("label");
+                        computerLabel.setAttribute("for", "computerField");
+                            var computerIcon = document.createElement("i");
+                            computerIcon.className = "fa fa-desktop";
+                            computerIcon.setAttribute("aria-hidden", "true");
+                        computerLabel.appendChild(computerIcon);
+                        var playerField = document.createElement("input");
+                        playerField.className = "hidden";
+                        playerField.setAttribute("type", "radio");
+                        playerField.setAttribute("name", "type");
+                        playerField.value = "player";
+                        playerField.id = "playerField";
+                        if(type == 0) playerField.checked = true;
+                        var playerLabel = document.createElement("label");
+                        playerLabel.setAttribute("for", "playerField");
+                            var playerIcon = document.createElement("i");
+                            playerIcon.className = "fa fa-user";
+                            playerIcon.setAttribute("aria-hidden", "true");
+                        playerLabel.appendChild(playerIcon);
+                        var button = document.createElement("button");
+                        button.className = "next";
+                        button.setAttribute("type", "submit");
+                        button.innerText = "Dalej";
+                    form.appendChild(h1);
+                    form.appendChild(computerField);
+                    form.appendChild(computerLabel);
+                    form.appendChild(playerField);
+                    form.appendChild(playerLabel);
+                    form.appendChild(button);
                     form.addEventListener("submit", function(event){
                         event.preventDefault();
+                        var radios = form.getElementsByTagName("input");
+                        for(var i=0; i<radios.length; i++){
+                            if(radios[i].checked){
+                                var val = radios[i].value;
+                                form.innerHTML = "";
+                                var loader = document.createElement("img");
+                                loader.setAttribute("src", "/img/loader.gif");
+                                form.appendChild(loader);
+                                switch(val){
+                                    case "player":
+                                        Cookies.set("type", 0, {expires: 7});
+                                        var divs = [document.createElement("div"), document.createElement("div"), document.createElement("div")];
+                                                var player1Input = document.createElement("input");
+                                                player1Input.setAttribute("type", "text");
+                                                player1Input.setAttribute("name", "player1-name");
+                                                    var player1Name = Cookies.get('player1');
+                                                    if((typeof(player1Name) === "string"))
+                                                        player1Input.value = player1Name;
+                                                player1Input.setAttribute("placeholder", "Nazwa pierwszego gracza");
+                                                divs[0].appendChild(player1Input);
 
-                        var player1Name = player1Input.value, player2Name = player2Input.value;
-                        player1Name = (player1Name.length > 0 ? player1Name : "Gracz 1");
-                        player2Name = (player2Name.length > 0 ? player2Name : "Gracz 2");
-                        self.setPlayers(player1Name, player2Name);
-                        document.body.removeChild(dialog);
+                                                var player2Input = document.createElement("input");
+                                                player2Input.setAttribute("type", "text");
+                                                player2Input.setAttribute("name", "player2-name");
+                                                var player2Name = Cookies.get('player2');
+                                                if((typeof(player2Name) === "string"))
+                                                    player2Input.value = player2Name;
+                                                player2Input.setAttribute("placeholder", "Nazwa drugiego gracza");
+                                                divs[1].appendChild(player2Input);
 
-                        self.start();
+                                                var button = document.createElement("button");
+                                                button.setAttribute("type", "submit");
+                                                button.innerText = "Rozpocznij grę";
+                                                divs[2].appendChild(button);
+                                        form.innerHTML = "";
+                                        form.appendChild(divs[0]);
+                                        form.appendChild(divs[1]);
+                                        form.appendChild(divs[2]);
+                                        form.addEventListener("submit", function(event){
+                                            event.preventDefault();
+
+                                            var player1Name = player1Input.value, player2Name = player2Input.value;
+                                            player1Name = (player1Name.length > 0 ? player1Name : "Gracz 1");
+                                            player2Name = (player2Name.length > 0 ? player2Name : "Gracz 2");
+                                            Cookies.set("player1", player1Name, {expires: 7});
+                                            Cookies.set("player2", player2Name, {expires: 7});
+                                            self.setPlayers(player1Name, player2Name, false, false);
+                                            document.body.removeChild(dialog);
+
+                                            self.start();
+                                        }, false);
+                                    break;
+                                    case "computer":
+                                        Cookies.set("type", 1, {expires: 7});
+                                        var divs = [document.createElement("div"), document.createElement("div")];
+                                                var player1Input = document.createElement("input");
+                                                player1Input.setAttribute("type", "text");
+                                                player1Input.setAttribute("name", "player1-name");
+                                                    var player1Name = Cookies.get('player1');
+                                                    if((typeof(player1Name) === "string"))
+                                                        player1Input.value = player1Name;
+                                                player1Input.setAttribute("placeholder", "Nazwa pierwszego gracza");
+                                                divs[0].appendChild(player1Input);
+
+                                                var button = document.createElement("button");
+                                                button.setAttribute("type", "submit");
+                                                button.innerText = "Rozpocznij grę";
+                                                divs[1].appendChild(button);
+                                        form.innerHTML = "";
+                                        form.appendChild(divs[0]);
+                                        form.appendChild(divs[1]);
+                                        form.addEventListener("submit", function(event){
+                                            event.preventDefault();
+                                            var player1Name = player1Input.value;
+                                            player1Name = (player1Name.length > 0 ? player1Name : "Gracz 1");
+                                            Cookies.set("player1", player1Name, {expires: 7});
+                                            self.setPlayers(player1Name, "Komputer", false, true);
+                                            document.body.removeChild(dialog);
+
+                                            self.start();
+                                        }, false);
+                                    break;
+                                    default:
+                                        var h1 = document.createElement("h1");
+                                        h1.innerText = "Wystąpił błąd!";
+                                        form.appendChild(h1);
+                                    break;
+                                }
+                                break;
+                            }
+                        }
                     }, false);
                 dialog.appendChild(form);
             document.body.appendChild(dialog);
@@ -68,8 +168,6 @@ class Game{
         /* RESET EVENT */
         if(params.resetSelector instanceof Node){
             params.resetSelector.addEventListener("click", function(){
-                Cookies.remove("player1");
-                Cookies.remove("player2");
                 this.players = undefined;
                 gettingStarted();
             }, false);
@@ -83,13 +181,7 @@ class Game{
         if(params.player2Selector instanceof Node)
             this.playersSelectors.push({player: 1, selector: params.player2Selector});
 
-        var player1Name = Cookies.get('player1'), player2Name = Cookies.get('player2');
-        if((typeof(player1Name) === "string") && (typeof(player2Name) === "string")){
-            this.setPlayers(player1Name, player2Name);
-            this.start();
-        }else{
-            gettingStarted();
-        }
+        gettingStarted();
     }
 
     reloadScore(){
@@ -189,9 +281,19 @@ class Game{
                 item.classList.add("point");
                 item.takenPieces = takeArray[bestTakes[i]].getTakenPiecesLocations();
                 item.location = location;
-                item.addEventListener("click", function(){
-                    self.move(this);
-                }, false);
+                if(!self.players[self.activePlayerIndex].isComputer()){
+                    item.addEventListener("click", function(){
+                        self.move(this);
+                    }, false);
+                }
+            }
+
+            if(this.players[this.activePlayerIndex].isComputer()){
+                setTimeout(function(){
+                    var random = Math.floor(Math.random() * bestTakes.length);
+                    var location = takeArray[bestTakes[random]].getLocation();
+                    self.move(self.board.getBoard().getElementsByClassName("row")[location.y].getElementsByClassName("field")[location.x]);
+                }, ComputerReaction);
             }
         }else{
             for(var i=0; i<bestTakes.length; i++){
@@ -211,16 +313,27 @@ class Game{
             this.setPossibleTakeMoves($this.moves.getAllMoves());
         }else{
             var self = this;
-            $this.moves.getAllMoves().forEach(function(item){
+            var moves = $this.moves.getAllMoves();
+            moves.forEach(function(item){
                 var location = item.getLocation();
                 var field = self.board.getBoard().getElementsByClassName("row")[location.y].getElementsByClassName("field")[location.x];
                 field.classList.add("possible");
                 field.location = location;
                 field.takenPieces = [];
-                field.addEventListener("click", function(){
-                    self.move(this);
-                }, false);
+                if(!self.players[self.activePlayerIndex].isComputer()){
+                    field.addEventListener("click", function(){
+                        self.move(this);
+                    }, false);
+                }
             });
+
+            if(this.players[this.activePlayerIndex].isComputer()){
+                setTimeout(function(){
+                    var random = Math.floor(Math.random() * moves.length);
+                    var location = moves[random].getLocation();
+                    self.move(self.board.getBoard().getElementsByClassName("row")[location.y].getElementsByClassName("field")[location.x]);
+                }, ComputerReaction);
+            }
         }
     }
 
@@ -428,10 +541,20 @@ class Game{
                 var me = self.board.getBoard().getElementsByClassName("row")[location.y].getElementsByClassName("field")[location.x].firstChild;
                 me.classList.add("shifting");
                 me.moves = item;
-                me.addEventListener("click", function(){
-                    self.setPossibleMoves(this);
-                }, false);
+                if(!self.players[self.activePlayerIndex].isComputer()){
+                    me.addEventListener("click", function(){
+                        self.setPossibleMoves(this);
+                    }, false);
+                }
             });
+            if(this.players[this.activePlayerIndex].isComputer()){
+                setTimeout(function(){
+                    var random = Math.floor(Math.random() * possibleMoves.length);
+                    var location = possibleMoves[random].getPieceLocation();
+                    var me = self.board.getBoard().getElementsByClassName("row")[location.y].getElementsByClassName("field")[location.x].firstChild;
+                    self.setPossibleMoves(me);
+                }, ComputerReaction);
+            }
             return GameStatus.OK;
         }
     }
@@ -460,13 +583,17 @@ class Game{
             if(this.activePlayerIndex === 0){
                 this.setTurn(false);
                 this.activePlayerIndex = 1;
-                if(this.setTurn( true) === GameStatus.BLOCKED)
+                if(this.setTurn(true) === GameStatus.BLOCKED){
+                    this.activePlayerIndex = 0;
                     this.end(false);
+                }
             }else{
                 this.setTurn( false);
                 this.activePlayerIndex = 0;
-                if(this.setTurn( true) === GameStatus.BLOCKED)
+                if(this.setTurn(true) === GameStatus.BLOCKED){
+                    this.activePlayerIndex = 1;
                     this.end(false);
+                }
             }
         }
     }
@@ -482,9 +609,7 @@ class Game{
     }
 
     end(double_win){
-        var winner = this.players[this.activePlayerIndex].getName(), loser = this.players[(this.activePlayerIndex === 0 ? 1 : 0)].getName();
-        var winnerSelector = this.playersSelectors[this.activePlayerIndex].selector, loserSelector = this.playersSelectors[(this.activePlayerIndex === 0 ? 1 : 0)].selector;
-        this.players = undefined;
+        var winner = this.players[this.activePlayerIndex], loser = this.players[(this.activePlayerIndex === 0 ? 1 : 0)];
         this.movesWithoutTakeWithKings = 0;
         var pieces = document.getElementsByClassName("piece");
         while(pieces[0])
@@ -503,10 +628,7 @@ class Game{
                 var self = this;
                 button.addEventListener("click", function(){
                     dialog.remove();
-                    self.setPlayers(loser, winner);
-                    self.playersSelectors = [];
-                    self.playersSelectors.push({player: 0, selector: winnerSelector});
-                    self.playersSelectors.push({player: 1, selector: loserSelector});
+                    self.setPlayers(loser.getName(), winner.getName(), loser.isComputer(), winner.isComputer());
                     self.start();
                 }, false);
 
@@ -517,8 +639,12 @@ class Game{
 
         if(double_win)
             h3.innerHTML = "Gra zakończyła się <span>remisem</span>!";
-        else
-            h3.innerHTML = "Wygrał gracz o nazwie: <span>"+winner+"</span>.";
+        else{
+            if(winner.isComputer())
+                h3.innerHTML = "Wygrał komputer.";
+            else
+                h3.innerHTML = "Wygrał gracz o nazwie: <span>"+winner.getName()+"</span>.";
+        }
         document.body.appendChild(dialog);
     }
 };
