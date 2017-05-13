@@ -70,7 +70,7 @@ class Game{
                                 var val = radios[i].value;
                                 form.innerHTML = "";
                                 var loader = document.createElement("img");
-                                loader.setAttribute("src", "/img/loader.gif");
+                                loader.setAttribute("src", "img/loader.gif");
                                 form.appendChild(loader);
                                 switch(val){
                                     case "player":
