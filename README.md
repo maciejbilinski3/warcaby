@@ -1,3 +1,3 @@
 # warcaby
 Projekt szkolny.
-http://maciejbilinski2.esy.es/
+https://maciejbilinski3.github.io/warcaby/
