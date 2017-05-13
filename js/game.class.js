@@ -1,4 +1,4 @@
-const ComputerReaction = 100;
+const ComputerReaction = 1000;
 class Game{
     setPlayers(player1Name, player2Name, player1Computer, player2Computer){
         try{
